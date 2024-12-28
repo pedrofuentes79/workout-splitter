@@ -1,5 +1,4 @@
-import { assert } from 'console';
-import { WorkoutSplitter } from '../WorkoutSplitter';
+import { WorkoutSplitterWithMuscleGroup } from '../WorkoutSplitter';
 
 
 // define global routine
@@ -12,7 +11,7 @@ workoutDays = {
 
 describe('workoutSplitter', () => {
     it('should know resting days for a muscle group', () => {
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         // get least resting time for a given muscle group
         const restingTime = splitter.restingTimeFor('Shoulders');
@@ -30,7 +29,7 @@ describe('workoutSplitter', () => {
             'Saturday': ['Shoulders']
         }
 
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         // get least resting time for a given muscle group
         const restingTime = splitter.restingTimeFor('Shoulders');
@@ -47,7 +46,7 @@ describe('workoutSplitter', () => {
             'Monday': ['Chest', 'Triceps', 'Shoulders']
         }
 
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         // get least resting time for a given muscle group
         const restingTime = splitter.restingTimeFor('Shoulders');
@@ -63,7 +62,7 @@ describe('workoutSplitter', () => {
             'Monday': ['Chest', 'Triceps', 'Shoulders'],
         }
 
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         // get least resting time for a given muscle group
         const restingTime = splitter.restingTimeFor('Triceps');
@@ -79,7 +78,7 @@ describe('workoutSplitter', () => {
             'Monday': ['Chest', 'Triceps', 'Shoulders'],
         }
 
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         // try catch
         expect(() => splitter.restingTimeFor('Biceps')).toThrow('Muscle group not being trained');
@@ -95,7 +94,7 @@ describe('workoutSplitter', () => {
             'Friday': ['Shoulders'],
         }
 
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         expect(splitter.restingTimeFor('Shoulders')).toBe(1);
     })

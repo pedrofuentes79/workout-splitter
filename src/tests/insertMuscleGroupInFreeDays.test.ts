@@ -1,4 +1,4 @@
-import { WorkoutSplitter } from '../WorkoutSplitter';
+import { WorkoutSplitterWithMuscleGroup } from '../WorkoutSplitter';
 
 
 // define global routine
@@ -11,19 +11,19 @@ workoutDays = {
 
 describe('workoutSplitter', () => {
     it('should insert muscle group in free days', () => {
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         splitter.insertMuscleGroup('Chest', 2, 2);
         
-        expect(workoutDays['Tuesday']).toContain('Chest');
-        expect(workoutDays['Friday']).toContain('Chest');
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Chest');
+        expect(splitter.muscleGroupsFor('Friday')).toContain('Chest');
         }
     )
 })
 
 describe('workoutSplitter', () => {
     it('should not insert muscle group if there are not enough free days', () => {
-        const splitter = new WorkoutSplitter(workoutDays);  
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);  
 
         expect(() => splitter.insertMuscleGroup('Chest', 4, 2)).toThrow('Not enough free days to insert muscle group');
     })
@@ -39,13 +39,13 @@ describe('workoutSplitter', () => {
         };
 
 
-        const splitter = new WorkoutSplitter(workoutDays);
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);
 
         splitter.insertMuscleGroup('Chest', 2, 2);
 
-        expect(workoutDays['Tuesday']).toContain('Shoulders');
-        expect(workoutDays['Tuesday']).toContain('Chest');
-        expect(workoutDays['Friday']).toContain('Chest');
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Shoulders');
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Chest');
+        expect(splitter.muscleGroupsFor('Friday')).toContain('Chest');
     })
 })
 
@@ -57,9 +57,60 @@ describe('workoutSplitter', () => {
             'Saturday': []
         };
 
-        const splitter = new WorkoutSplitter(workoutDays);
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);
 
         expect(() => splitter.insertMuscleGroup('Chest', 2, 2)).
         toThrow('Not enough free days to insert muscle group');
+    })
+})
+
+describe('workoutSplitter', () => {
+    it('should leave everything as is with frequency=0', () => {
+        const workoutDays = {
+            'Tuesday': ['Chest'],
+            'Friday': [],
+            'Saturday': []
+        };
+
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);
+        splitter.insertMuscleGroup('Chest', 0, 2);
+
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Chest');
+        expect(splitter.isDayEmpty('Friday')).toBe(true);
+        expect(splitter.isDayEmpty('Saturday')).toBe(true);
+    })
+})
+
+describe('workoutSplitter', () => {
+    it('should add a muscle group to an existing workout, keeping the previous muscle groups', () => {
+        const workoutDays = {
+            'Tuesday': ['Chest'],
+            'Friday': [],
+            'Saturday': []
+        };
+
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);
+        splitter.addMuscleGroupTo('Tuesday', ['Shoulders']);
+
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Chest');
+        
+    })
+})
+
+describe('workoutSplitter', () => {
+    it('should keep the routine as it was if inserting is not possible', () => {
+        const workoutDays = {
+            'Tuesday': ['Chest'],
+            'Friday': [],
+            'Saturday': []
+        };
+
+        const splitter = new WorkoutSplitterWithMuscleGroup(workoutDays);
+        expect(() => splitter.insertMuscleGroup('Chest', 2, 2)).toThrow("Not enough free days to insert muscle group");
+
+        expect(splitter.muscleGroupsFor('Tuesday')).toContain('Chest');
+        expect(splitter.isDayEmpty('Friday')).toBe(true);
+        expect(splitter.isDayEmpty('Saturday')).toBe(true);
+
     })
 })
