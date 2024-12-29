@@ -50,10 +50,10 @@ class WorkoutSplitter<T>{
         throw new Error("Subclass responsibility");
     }
 
-}
-
-class WorkoutSplitterWithSetsPerMuscleGroup extends WorkoutSplitter<WorkoutWithSetsPerMuscleGroup>{
-
+    canInsertMuscleGroup(day: string, muscleGroup: string, minimumRest: number): boolean {
+        return this.trainingDaysFor(muscleGroup)
+            .every(otherDay => this.restDaysBetween(day, otherDay) >= minimumRest);
+    }
 }
 
 class WorkoutSplitterWithMuscleGroup extends WorkoutSplitter<WorkoutWithMuscleGroup>{
@@ -70,7 +70,6 @@ class WorkoutSplitterWithMuscleGroup extends WorkoutSplitter<WorkoutWithMuscleGr
             throw new Error("This day is not a workout day");
         }
         return this.workoutDays[day].slice();
-
     }
 
     isDayEmpty(day: string): boolean {
@@ -97,17 +96,7 @@ class WorkoutSplitterWithMuscleGroup extends WorkoutSplitter<WorkoutWithMuscleGr
         }    
     }
 
-   
 
-    canInsertMuscleGroup(day: string, muscleGroup: string, minimumRest: number): boolean {
-        const otherDaysForMuscleGroup = this.trainingDaysFor(muscleGroup);
-        for(const otherDay of otherDaysForMuscleGroup){
-            const restDays = this.restDaysBetween(day, otherDay);
-            if (restDays < minimumRest) return false;
-        }
-        return true;
-            
-    }
 
 
     freeDaysFor(muscleGroup: string): string[] {
@@ -129,10 +118,8 @@ class WorkoutSplitterWithMuscleGroup extends WorkoutSplitter<WorkoutWithMuscleGr
         return days;
     }
 
-
-    
     // #endregion
 
 }
 
-export { WorkoutSplitter, WorkoutSplitterWithSetsPerMuscleGroup, WorkoutSplitterWithMuscleGroup };
+export { WorkoutSplitter, WorkoutWithSetsPerMuscleGroup, WorkoutSplitterWithMuscleGroup };
