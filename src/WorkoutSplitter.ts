@@ -52,7 +52,7 @@ class WorkoutSplitter<T>{
 
     canInsertMuscleGroup(day: string, muscleGroup: string, minimumRest: number): boolean {
         return this.trainingDaysFor(muscleGroup)
-            .every(otherDay => this.restDaysBetween(day, otherDay) >= minimumRest);
+            .every(otherDay => day === otherDay || this.restDaysBetween(day, otherDay) >= minimumRest);
     }
 }
 
